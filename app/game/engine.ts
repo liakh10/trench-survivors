@@ -1,6 +1,6 @@
 // Trench Survivors — core simulation. Framework-agnostic; no React per frame.
 import {
-  WEAPONS, PASSIVES, ENEMIES, CHARACTERS,
+  WEAPONS, PASSIVES, ENEMIES, CHARACTERS, ENEMY_COLORS,
   type WeaponId, type PassiveId, type EnemyId, type CharDef,
 } from "./content";
 
@@ -11,6 +11,7 @@ export interface Enemy {
   speed: number; damage: number; radius: number; xp: number; mc: number;
   ranged?: boolean; shootCd: number; orbCd: number; hitFlash: number;
   kx: number; ky: number; // knockback velocity
+  color: string;
   boss?: boolean;
 }
 export interface Projectile { x: number; y: number; vx: number; vy: number; dmg: number; pierce: number; radius: number; life: number; color: string; hits: Set<Enemy>; }
@@ -69,6 +70,8 @@ export class Game {
     this.baseHp = this.char.hp; this.baseSpeed = this.char.speed; this.basePickup = this.char.pickup;
     this.hp = this.maxHp;
     this.weapons.push({ id: this.char.startWeapon, level: 1, cd: 0 });
+    // start with a swarm already closing in
+    for (let i = 0; i < 9; i++) this.spawnEnemy("jeeter");
   }
 
   // ── derived stats ──
@@ -117,10 +120,11 @@ export class Game {
   // ── spawning ──
   private spawnLogic(dt: number) {
     this.spawnTimer -= dt;
-    const interval = lerp(1.3, 0.38, Math.min(1, this.time / 320));
+    // denser from the very start, ramps up over time
+    const interval = lerp(0.8, 0.3, Math.min(1, this.time / 300));
     if (this.spawnTimer <= 0) {
       this.spawnTimer = interval;
-      const batch = 1 + Math.floor(this.time / 48) + (Math.random() < 0.25 ? 1 : 0);
+      const batch = 3 + Math.floor(this.time / 40) + (Math.random() < 0.4 ? 1 : 0);
       for (let i = 0; i < batch; i++) this.spawnEnemy();
     }
     // boss
@@ -146,7 +150,9 @@ export class Game {
       type, x: this.px + Math.cos(ang) * r, y: this.py + Math.sin(ang) * r,
       hp: def.hp * (type === "boss" ? hpMult * 1.2 : hpMult), maxHp: def.hp * (type === "boss" ? hpMult * 1.2 : hpMult),
       speed: def.speed, damage: def.damage, radius: def.radius, xp: def.xp, mc: def.mc,
-      ranged: def.ranged, shootCd: 1.5 + Math.random(), orbCd: 0, hitFlash: 0, kx: 0, ky: 0, boss: type === "boss",
+      ranged: def.ranged, shootCd: 1.5 + Math.random(), orbCd: 0, hitFlash: 0, kx: 0, ky: 0,
+      color: type === "boss" ? def.color : ENEMY_COLORS[(Math.random() * ENEMY_COLORS.length) | 0],
+      boss: type === "boss",
     };
     this.enemies.push(e);
   }
@@ -255,7 +261,7 @@ export class Game {
     else if (Math.random() < 0.018) this.bags.push({ x: e.x, y: e.y, vx: 0, vy: 0, value: 0, kind: "heal" });
     // particles
     const n = e.boss ? 26 : 7;
-    for (let k = 0; k < n; k++) { const a = Math.random() * TAU, s = 40 + Math.random() * (e.boss ? 220 : 120); this.particles.push({ x: e.x, y: e.y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: 0.5, maxLife: 0.5, color: ENEMIES[e.type].color, size: 2 + Math.random() * 3 }); }
+    for (let k = 0; k < n; k++) { const a = Math.random() * TAU, s = 40 + Math.random() * (e.boss ? 220 : 120); this.particles.push({ x: e.x, y: e.y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: 0.5, maxLife: 0.5, color: e.color, size: 2 + Math.random() * 3 }); }
     if (e.boss) { this.shakeT = 0.5; this.shakeMag = 14; }
     this.onKill?.();
   }

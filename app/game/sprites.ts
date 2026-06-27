@@ -1,6 +1,5 @@
 // Procedural canvas sprites — meme animal "soldiers" + enemy memes. No image assets.
 import type { Enemy } from "./engine";
-import { ENEMIES } from "./content";
 
 type C = CanvasRenderingContext2D;
 
@@ -32,7 +31,7 @@ export function drawEnemy(ctx: C, e: Enemy, x: number, y: number) {
   ctx.save(); ctx.translate(x, y);
   const r = e.radius; const flash = e.hitFlash > 0;
   ctx.fillStyle = "rgba(0,0,0,0.3)"; ctx.beginPath(); ctx.ellipse(0, r * 0.85, r * 0.8, r * 0.35, 0, 0, Math.PI * 2); ctx.fill();
-  const col = flash ? "#fff" : ENEMIES[e.type].color;
+  const col = flash ? "#fff" : e.color;
   if (e.type === "jeeter") {
     ctx.fillStyle = col; circle(ctx, 0, 0, r);
     ctx.fillStyle = flash ? "#222" : "#2a0d18"; ctx.beginPath(); ctx.moveTo(-r * 0.5, -r * 0.4); ctx.lineTo(-r * 0.1, -r * 0.15); ctx.lineTo(-r * 0.5, -r * 0.05); ctx.closePath(); ctx.fill();

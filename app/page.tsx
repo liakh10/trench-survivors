@@ -55,7 +55,7 @@ export default function Home() {
       {phase === "intro" && (
         <div className={`fixed inset-0 z-30 flex flex-col items-center justify-center text-center px-6 ${introLeaving ? "intro-leaving" : ""}`}>
           <div className="pop-in flex flex-col items-center">
-            <div className="bob rounded-2xl" style={{ width: "min(82vw, 440px)", aspectRatio: "1 / 1", backgroundImage: "url(/poster.png)", backgroundSize: "cover", backgroundPosition: "center", borderRadius: 20, border: "1px solid #2a3320", boxShadow: "0 0 70px rgba(160,200,80,0.3)" }} />
+            <div className="rounded-2xl" style={{ width: "min(82vw, 440px)", aspectRatio: "1 / 1", backgroundImage: "url(/poster.png)", backgroundSize: "cover", backgroundPosition: "center", borderRadius: 20, border: "1px solid #2a3320", boxShadow: "0 0 70px rgba(160,200,80,0.3)" }} />
             <div className="text-base md:text-lg text-white/60 mt-10 max-w-lg">Auto-blast endless waves of jeeters &amp; rug devs. Level up, stack absurd synergies, farm the bag. How long can you survive?</div>
             <div className="mt-14 flex flex-col sm:flex-row gap-8 md:gap-14 items-center">
               <button onClick={enter} className="menu-btn" style={{ minWidth: 300 }}>PLAY AS GUEST</button>
@@ -101,11 +101,11 @@ export default function Home() {
 
             <button onClick={() => startGame(charId)} className="menu-btn mt-20" style={{ minWidth: 340, fontSize: 26 }}>DEPLOY ⚔</button>
 
-            {/* footer */}
-            <div className="flex flex-col items-center gap-10 mt-auto pt-24">
+            {/* footer — normal gap from DEPLOY; CA sits right under the ticker */}
+            <div className="flex flex-col items-center mt-16 pb-12">
               <div className="hud-card px-10 py-2.5 text-3xl gold-text" style={{ fontFamily: "var(--font-display)" }}>{TICKER}</div>
               <CADisplay />
-              <div className="flex items-center gap-8">
+              <div className="flex items-center gap-8 mt-10">
                 <a href={X_URL} target="_blank" rel="noopener noreferrer" aria-label="Follow on X" className="hud-btn" style={{ width: 52, height: 52 }}>
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
                 </a>
@@ -138,9 +138,9 @@ function CADisplay() {
   const real = isRealCA();
   function copy() { if (!real) return; navigator.clipboard.writeText(CA); setCopied(true); setTimeout(() => setCopied(false), 1400); }
   return (
-    <div className="flex flex-col items-center gap-4">
-      {/* address always ONE line; box grows to fit, scrolls on narrow screens */}
-      <div className="hud-card inline-flex items-center gap-3 px-4 py-2.5" style={{ maxWidth: "94vw" }}>
+    <div className="flex flex-col items-center">
+      {/* CA sits right under the ticker; address always ONE line */}
+      <div className="hud-card inline-flex items-center gap-3 px-4 py-2.5 mt-3" style={{ maxWidth: "94vw" }}>
         <span className="shrink-0" style={{ color: "#8aa53a", fontWeight: 800, fontSize: 14 }}>CA:</span>
         <span onClick={copy} title={real ? CA : undefined}
           style={{ color: copied ? "#39d98a" : real ? "#e9f0d8" : "#7a845f", fontWeight: 600, fontSize: 14, fontFamily: real ? "ui-monospace, monospace" : "inherit", whiteSpace: "nowrap", overflowX: "auto", maxWidth: "100%", cursor: real ? "pointer" : "default" }}>
@@ -150,14 +150,24 @@ function CADisplay() {
           <button onClick={copy} aria-label="Copy CA" className="shrink-0 flex items-center justify-center cursor-pointer" style={{ width: 28, height: 28, border: "2px solid #8aa53a", borderRadius: 6, color: copied ? "#39d98a" : "#8aa53a", fontSize: 14, background: "transparent" }}>{copied ? "✓" : "⧉"}</button>
         )}
       </div>
-      {/* Pump Fun + DexScreener always shown; links carry the CA variable (auto-fills on launch) */}
-      <div className="flex gap-4">
-        <a href={PUMP_URL + CA} target="_blank" rel="noopener noreferrer" className="hud-card px-5 py-2.5 text-sm flex items-center gap-2 hover:brightness-125" style={{ color: "#39d98a", fontWeight: 700 }}>💊 Pump Fun</a>
-        <a href={DEX_URL + CA} target="_blank" rel="noopener noreferrer" className="hud-card px-5 py-2.5 text-sm flex items-center gap-2 hover:brightness-125" style={{ color: "#7fe9ff", fontWeight: 700 }}>📈 DexScreener</a>
+      {/* Pump Fun + DexScreener — links carry the CA variable (auto-fills on launch).
+          Per the random icons-rule, this project uses the sent icons (pill + owl). */}
+      <div className="flex gap-5 mt-6">
+        <a href={PUMP_URL + CA} target="_blank" rel="noopener noreferrer" className="hud-card px-5 py-2.5 text-sm flex items-center gap-2.5 hover:brightness-125" style={{ color: "#39d98a", fontWeight: 700 }}>
+          {SHOW_BTN_ICONS && <span aria-hidden style={{ width: 22, height: 22, backgroundImage: "url(/icons/pumpfun.png)", backgroundSize: "cover", borderRadius: "50%", flexShrink: 0 }} />}
+          Pump Fun
+        </a>
+        <a href={DEX_URL + CA} target="_blank" rel="noopener noreferrer" className="hud-card px-5 py-2.5 text-sm flex items-center gap-2.5 hover:brightness-125" style={{ color: "#e9f0d8", fontWeight: 700 }}>
+          {SHOW_BTN_ICONS && <span aria-hidden style={{ width: 22, height: 22, backgroundImage: "url(/icons/dexscreener.png)", backgroundSize: "cover", borderRadius: "50%", flexShrink: 0 }} />}
+          DexScreener
+        </a>
       </div>
     </div>
   );
 }
+
+// Random per-project choice (NOTES rule): show the sent button icons, or none. This build: icons on.
+const SHOW_BTN_ICONS = true;
 
 function StatBar({ label, v, max, color }: { label: string; v: number; max: number; color: string }) {
   const pct = Math.max(8, Math.min(100, (v / max) * 100));

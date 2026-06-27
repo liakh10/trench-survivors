@@ -102,6 +102,9 @@ export const PASSIVES: Record<PassiveId, PassiveDef> = {
 
 export type EnemyId = "jeeter" | "paper" | "fudbot" | "whale" | "boss";
 
+// vibrant palette — each non-boss enemy gets a random color so the swarm is colorful
+export const ENEMY_COLORS = ["#e6356f", "#ff7847", "#ffd23f", "#39d98a", "#19e0ff", "#3b7dd8", "#a06bff", "#ff4d6d", "#f15bb5", "#9bff66", "#ff9f1c", "#5cf2e0"];
+
 export interface EnemyDef {
   id: EnemyId; name: string; color: string;
   hp: number; speed: number; damage: number; radius: number; xp: number; mc: number;
