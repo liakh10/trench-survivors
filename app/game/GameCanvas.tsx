@@ -52,7 +52,7 @@ export default function GameCanvas({ charId, onExit }: { charId: string; onExit:
       // input → move vector
       const j = joyRef.current; const k = keysRef.current;
       if (j.active) { g.moveX = j.vx; g.moveY = j.vy; }
-      else { let mx = 0, my = 0; if (k.has("w") || k.has("arrowup")) my -= 1; if (k.has("s") || k.has("arrowdown")) my += 1; if (k.has("a") || k.has("arrowleft")) mx -= 1; if (k.has("d") || k.has("arrowright")) mx += 1; g.moveX = mx; g.moveY = my; }
+      else { let mx = 0, my = 0; if (k.has("KeyW") || k.has("ArrowUp")) my -= 1; if (k.has("KeyS") || k.has("ArrowDown")) my += 1; if (k.has("KeyA") || k.has("ArrowLeft")) mx -= 1; if (k.has("KeyD") || k.has("ArrowRight")) mx += 1; g.moveX = mx; g.moveY = my; }
       if (!pausedRef.current) g.update(dt);
       draw(ctx, g, W, H, dpr);
       raf = requestAnimationFrame(frame);
@@ -69,8 +69,9 @@ export default function GameCanvas({ charId, onExit }: { charId: string; onExit:
 
   // keyboard
   useEffect(() => {
-    const dn = (e: KeyboardEvent) => { keysRef.current.add(e.key.toLowerCase()); if ([" ", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(e.key.toLowerCase())) e.preventDefault(); };
-    const up = (e: KeyboardEvent) => keysRef.current.delete(e.key.toLowerCase());
+    // use e.code (physical key) so movement is keyboard-layout independent (RU/etc.)
+    const dn = (e: KeyboardEvent) => { keysRef.current.add(e.code); if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) e.preventDefault(); };
+    const up = (e: KeyboardEvent) => keysRef.current.delete(e.code);
     window.addEventListener("keydown", dn); window.addEventListener("keyup", up);
     return () => { window.removeEventListener("keydown", dn); window.removeEventListener("keyup", up); };
   }, []);

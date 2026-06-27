@@ -55,11 +55,9 @@ export default function Home() {
       {phase === "intro" && (
         <div className={`fixed inset-0 z-30 flex flex-col items-center justify-center text-center px-6 ${introLeaving ? "intro-leaving" : ""}`}>
           <div className="pop-in flex flex-col items-center">
-            <div className="bob flicker mb-5"><HeroArt size={188} /></div>
-            <h1 className="text-6xl md:text-8xl olive-text leading-none" style={{ fontFamily: "var(--font-display)" }}>TRENCH</h1>
-            <h1 className="text-6xl md:text-8xl gold-text leading-none mt-1" style={{ fontFamily: "var(--font-display)" }}>SURVIVORS</h1>
-            <div className="text-base text-white/60 mt-6 max-w-lg">Auto-blast endless waves of jeeters &amp; rug devs. Level up, stack absurd synergies, farm the bag. How long can you survive?</div>
-            <div className="mt-16 flex flex-col sm:flex-row gap-7 md:gap-10 items-center">
+            <div className="bob rounded-2xl" style={{ width: "min(82vw, 440px)", aspectRatio: "1 / 1", backgroundImage: "url(/poster.png)", backgroundSize: "cover", backgroundPosition: "center", borderRadius: 20, border: "1px solid #2a3320", boxShadow: "0 0 70px rgba(160,200,80,0.3)" }} />
+            <div className="text-base md:text-lg text-white/60 mt-10 max-w-lg">Auto-blast endless waves of jeeters &amp; rug devs. Level up, stack absurd synergies, farm the bag. How long can you survive?</div>
+            <div className="mt-14 flex flex-col sm:flex-row gap-8 md:gap-14 items-center">
               <button onClick={enter} className="menu-btn" style={{ minWidth: 300 }}>PLAY AS GUEST</button>
               <button onClick={walletEnter} className="menu-btn-purple" style={{ minWidth: 300 }}>{connected ? "ENTER WALLET" : "CONNECT WALLET"}</button>
             </div>
@@ -73,8 +71,8 @@ export default function Home() {
         return (
           <div className="relative z-10 min-h-screen flex flex-col items-center px-6 py-12 cine-in">
             <div className="text-center select-none">
-              <div className="text-5xl md:text-7xl olive-text leading-none" style={{ fontFamily: "var(--font-display)" }}>SELECT OPERATOR</div>
-              <div className="text-sm md:text-base tracking-[0.45em] text-white/40 mt-4">CHOOSE YOUR TRENCHER</div>
+              <div className="text-5xl md:text-7xl gold-text leading-none" style={{ fontFamily: "var(--font-display)" }}>TRENCH SURVIVORS</div>
+              <div className="text-xl md:text-3xl tracking-[0.4em] olive-text mt-5" style={{ fontFamily: "var(--font-display)" }}>SELECT TRENCHER</div>
             </div>
 
             {/* featured operator */}
@@ -101,13 +99,13 @@ export default function Home() {
               ))}
             </div>
 
-            <button onClick={() => startGame(charId)} className="menu-btn mt-16" style={{ minWidth: 340, fontSize: 26 }}>DEPLOY ⚔</button>
+            <button onClick={() => startGame(charId)} className="menu-btn mt-20" style={{ minWidth: 340, fontSize: 26 }}>DEPLOY ⚔</button>
 
             {/* footer */}
-            <div className="flex flex-col items-center gap-6 mt-auto pt-16">
+            <div className="flex flex-col items-center gap-10 mt-auto pt-24">
               <div className="hud-card px-10 py-2.5 text-3xl gold-text" style={{ fontFamily: "var(--font-display)" }}>{TICKER}</div>
               <CADisplay />
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-8">
                 <a href={X_URL} target="_blank" rel="noopener noreferrer" aria-label="Follow on X" className="hud-btn" style={{ width: 52, height: 52 }}>
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
                 </a>
@@ -140,7 +138,7 @@ function CADisplay() {
   const real = isRealCA();
   function copy() { if (!real) return; navigator.clipboard.writeText(CA); setCopied(true); setTimeout(() => setCopied(false), 1400); }
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex flex-col items-center gap-4">
       {/* address always ONE line; box grows to fit, scrolls on narrow screens */}
       <div className="hud-card inline-flex items-center gap-3 px-4 py-2.5" style={{ maxWidth: "94vw" }}>
         <span className="shrink-0" style={{ color: "#8aa53a", fontWeight: 800, fontSize: 14 }}>CA:</span>
@@ -152,36 +150,12 @@ function CADisplay() {
           <button onClick={copy} aria-label="Copy CA" className="shrink-0 flex items-center justify-center cursor-pointer" style={{ width: 28, height: 28, border: "2px solid #8aa53a", borderRadius: 6, color: copied ? "#39d98a" : "#8aa53a", fontSize: 14, background: "transparent" }}>{copied ? "✓" : "⧉"}</button>
         )}
       </div>
-      {real && (
-        <div className="flex gap-3">
-          <a href={PUMP_URL + CA} target="_blank" rel="noopener noreferrer" className="hud-card px-4 py-2 text-sm flex items-center gap-2" style={{ color: "#39d98a", fontWeight: 700 }}>💊 Pump Fun</a>
-          <a href={DEX_URL + CA} target="_blank" rel="noopener noreferrer" className="hud-card px-4 py-2 text-sm flex items-center gap-2" style={{ color: "#7fe9ff", fontWeight: 700 }}>📈 DexScreener</a>
-        </div>
-      )}
+      {/* Pump Fun + DexScreener always shown; links carry the CA variable (auto-fills on launch) */}
+      <div className="flex gap-4">
+        <a href={PUMP_URL + CA} target="_blank" rel="noopener noreferrer" className="hud-card px-5 py-2.5 text-sm flex items-center gap-2 hover:brightness-125" style={{ color: "#39d98a", fontWeight: 700 }}>💊 Pump Fun</a>
+        <a href={DEX_URL + CA} target="_blank" rel="noopener noreferrer" className="hud-card px-5 py-2.5 text-sm flex items-center gap-2 hover:brightness-125" style={{ color: "#7fe9ff", fontWeight: 700 }}>📈 DexScreener</a>
+      </div>
     </div>
-  );
-}
-
-// ── SVG art ──
-function HeroArt({ size = 150 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 120 120">
-      <defs><radialGradient id="hg" cx="50%" cy="40%" r="60%"><stop offset="0%" stopColor="#2a3a18" /><stop offset="100%" stopColor="#0e1109" /></radialGradient></defs>
-      <circle cx="60" cy="60" r="58" fill="url(#hg)" stroke="#3a472a" strokeWidth="2" />
-      {/* trench mound */}
-      <path d="M0 96 Q30 80 60 92 Q90 80 120 96 L120 120 L0 120 Z" fill="#1c2412" />
-      {/* $ bags */}
-      <g fill="#f5c542"><path d="M18 100 l5 -6 l5 6 l-5 6 z" /><path d="M98 102 l4 -5 l4 5 l-4 5 z" /></g>
-      {/* cat soldier */}
-      <g transform="translate(60 58)">
-        <ellipse cx="0" cy="26" rx="22" ry="8" fill="rgba(0,0,0,0.4)" />
-        <circle cx="0" cy="0" r="24" fill="#f1c27d" />
-        <path d="M-17 -12 L-22 -30 L-7 -19 Z" fill="#f1c27d" /><path d="M17 -12 L22 -30 L7 -19 Z" fill="#f1c27d" />
-        <circle cx="-8" cy="-2" r="3.4" fill="#241a10" /><circle cx="8" cy="-2" r="3.4" fill="#241a10" />
-        <circle cx="0" cy="7" r="2.8" fill="#3a2a1a" />
-        <path d="M-26 -4 A26 26 0 0 1 26 -4 Z" fill="#3c4a2e" /><rect x="-27" y="-7" width="54" height="5" fill="#4f6138" />
-      </g>
-    </svg>
   );
 }
 
