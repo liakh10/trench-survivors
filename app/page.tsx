@@ -69,30 +69,30 @@ export default function Home() {
       {phase === "select" && (() => {
         const sel = CHARACTERS.find((c) => c.id === charId) ?? CHARACTERS[0];
         return (
-          <div className="relative z-10 min-h-screen flex flex-col items-center justify-between px-6 py-12 cine-in">
+          <div className="relative z-10 min-h-screen flex flex-col items-center justify-between px-6 pt-6 pb-7 cine-in">
             <div className="flex flex-col items-center w-full">
             <div className="text-center select-none">
               <div className="text-5xl md:text-7xl gold-text leading-none" style={{ fontFamily: "var(--font-display)" }}>TRENCH SURVIVORS</div>
               <div className="text-xl md:text-3xl tracking-[0.4em] olive-text mt-5" style={{ fontFamily: "var(--font-display)" }}>SELECT TRENCHER</div>
             </div>
 
-            {/* featured operator */}
-            <div className="flex flex-col md:flex-row items-center gap-10 md:gap-16 mt-12 md:mt-16 w-full max-w-4xl">
-              <div className="bob shrink-0" style={{ width: 210, height: 210, borderRadius: "50%", backgroundImage: `url(${sel.img})`, backgroundSize: "cover", backgroundPosition: "center", border: `4px solid ${sel.color}`, boxShadow: `0 0 60px ${sel.color}66` }} />
-              <div className="text-center md:text-left flex-1">
+            {/* featured operator — centered & symmetric */}
+            <div className="flex flex-col items-center text-center gap-3 mt-4 w-full">
+              <div className="bob" style={{ width: 168, height: 168, borderRadius: "50%", backgroundImage: `url(${sel.img})`, backgroundSize: "cover", backgroundPosition: "center", border: `4px solid ${sel.color}`, boxShadow: `0 0 60px ${sel.color}77` }} />
+              <div>
                 <div className="text-5xl md:text-7xl gold-text leading-none" style={{ fontFamily: "var(--font-display)" }}>{sel.name}</div>
                 <div className="text-white/60 text-lg mt-3">{sel.desc}</div>
-                <div className="text-sm text-[#8aa53a] mt-2 tracking-wider" style={{ fontFamily: "var(--font-display)" }}>START WEAPON · {weaponName(sel.startWeapon)}</div>
-                <div className="flex flex-col gap-2.5 mt-6 max-w-sm mx-auto md:mx-0">
-                  <StatBar label="HP" v={sel.hp} max={160} color="#39d98a" />
-                  <StatBar label="SPEED" v={sel.speed} max={190} color="#7fe9ff" />
-                  <StatBar label="PICKUP" v={sel.pickup} max={200} color="#a06bff" />
-                </div>
+                <div className="text-sm text-[#8aa53a] mt-1.5 tracking-wider" style={{ fontFamily: "var(--font-display)" }}>START WEAPON · {weaponName(sel.startWeapon)}</div>
+              </div>
+              <div className="flex flex-col gap-2 w-full max-w-md mt-1">
+                <StatBar label="HP" v={sel.hp} max={160} color="#39d98a" />
+                <StatBar label="SPEED" v={sel.speed} max={190} color="#7fe9ff" />
+                <StatBar label="PICKUP" v={sel.pickup} max={200} color="#a06bff" />
               </div>
             </div>
 
             {/* roster — large avatars, generous spacing */}
-            <div className="flex flex-wrap justify-center gap-6 md:gap-9 mt-14">
+            <div className="flex flex-wrap justify-center gap-5 md:gap-7 mt-8">
               {CHARACTERS.map((c) => (
                 <button key={c.id} onClick={() => { getSfx().click(); setCharId(c.id); }} className={`roster-pick ${charId === c.id ? "on" : ""}`} title={c.name} aria-label={c.name}>
                   <span style={{ display: "block", width: 100, height: 100, borderRadius: "50%", backgroundImage: `url(${c.img})`, backgroundSize: "cover", backgroundPosition: "center" }} />
@@ -100,12 +100,12 @@ export default function Home() {
               ))}
             </div>
 
-            <button onClick={() => startGame(charId)} className="menu-btn mt-20" style={{ minWidth: 340, fontSize: 26 }}>DEPLOY ⚔</button>
+            <button onClick={() => startGame(charId)} className="menu-btn mt-7" style={{ minWidth: 400, fontSize: 28 }}>DEPLOY ⚔</button>
             </div>
 
             {/* footer pinned to the bottom (justify-between); big airy gaps between
                 groups, but CA stays tight under the ticker */}
-            <div className="flex flex-col items-center pb-2 gap-14">
+            <div className="flex flex-col items-center pb-2 gap-8">
               <div className="flex flex-col items-center gap-3">
                 <div className="hud-card px-10 py-2.5 text-3xl gold-text" style={{ fontFamily: "var(--font-display)" }}>{TICKER}</div>
                 <CABox />
