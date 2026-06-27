@@ -3,7 +3,7 @@
 export const CA: string = "SOON"; // Replace with real CA on launch
 export const TICKER = "$DIGIN";
 export const TOKEN_NAME = "Trench Survivors";
-export const X_URL = "https://x.com/soon"; // Replace with your X handle
+export const X_URL = "https://x.com/trencsurvivors"; // Replace with your X handle
 
 // CA block variant for this project: CA + Pump Fun + DexScreener buttons.
 // The address tail is pulled from the CA variable above (no hardcoding).
