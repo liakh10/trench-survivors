@@ -69,7 +69,8 @@ export default function Home() {
       {phase === "select" && (() => {
         const sel = CHARACTERS.find((c) => c.id === charId) ?? CHARACTERS[0];
         return (
-          <div className="relative z-10 min-h-screen flex flex-col items-center px-6 py-12 cine-in">
+          <div className="relative z-10 min-h-screen flex flex-col items-center justify-between px-6 py-12 cine-in">
+            <div className="flex flex-col items-center w-full">
             <div className="text-center select-none">
               <div className="text-5xl md:text-7xl gold-text leading-none" style={{ fontFamily: "var(--font-display)" }}>TRENCH SURVIVORS</div>
               <div className="text-xl md:text-3xl tracking-[0.4em] olive-text mt-5" style={{ fontFamily: "var(--font-display)" }}>SELECT TRENCHER</div>
@@ -100,12 +101,17 @@ export default function Home() {
             </div>
 
             <button onClick={() => startGame(charId)} className="menu-btn mt-20" style={{ minWidth: 340, fontSize: 26 }}>DEPLOY ⚔</button>
+            </div>
 
-            {/* footer — normal gap from DEPLOY; CA sits right under the ticker */}
-            <div className="flex flex-col items-center mt-16 pb-12">
-              <div className="hud-card px-10 py-2.5 text-3xl gold-text" style={{ fontFamily: "var(--font-display)" }}>{TICKER}</div>
-              <CADisplay />
-              <div className="flex items-center gap-8 mt-10">
+            {/* footer pinned to the bottom (justify-between); big airy gaps between
+                groups, but CA stays tight under the ticker */}
+            <div className="flex flex-col items-center pb-2 gap-14">
+              <div className="flex flex-col items-center gap-3">
+                <div className="hud-card px-10 py-2.5 text-3xl gold-text" style={{ fontFamily: "var(--font-display)" }}>{TICKER}</div>
+                <CABox />
+              </div>
+              <CALinks />
+              <div className="flex items-center gap-8">
                 <a href={X_URL} target="_blank" rel="noopener noreferrer" aria-label="Follow on X" className="hud-btn" style={{ width: 52, height: 52 }}>
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
                 </a>
@@ -133,35 +139,38 @@ function MusicToggle({ engine }: { engine: React.RefObject<MusicEngine | null> }
   return <button onClick={toggle} className="text-xs text-white/40 hover:text-white/70" style={{ fontFamily: "var(--font-display)" }}>MUSIC: {off ? "OFF" : "ON"}</button>;
 }
 
-function CADisplay() {
+// CA address box — sits right under the ticker (one line, copy on real CA)
+function CABox() {
   const [copied, setCopied] = useState(false);
   const real = isRealCA();
   function copy() { if (!real) return; navigator.clipboard.writeText(CA); setCopied(true); setTimeout(() => setCopied(false), 1400); }
   return (
-    <div className="flex flex-col items-center">
-      {/* CA sits right under the ticker; address always ONE line */}
-      <div className="hud-card inline-flex items-center gap-3 px-4 py-2.5 mt-3" style={{ maxWidth: "94vw" }}>
-        <span className="shrink-0" style={{ color: "#8aa53a", fontWeight: 800, fontSize: 14 }}>CA:</span>
-        <span onClick={copy} title={real ? CA : undefined}
-          style={{ color: copied ? "#39d98a" : real ? "#e9f0d8" : "#7a845f", fontWeight: 600, fontSize: 14, fontFamily: real ? "ui-monospace, monospace" : "inherit", whiteSpace: "nowrap", overflowX: "auto", maxWidth: "100%", cursor: real ? "pointer" : "default" }}>
-          {copied ? "COPIED!" : CA}
-        </span>
-        {real && (
-          <button onClick={copy} aria-label="Copy CA" className="shrink-0 flex items-center justify-center cursor-pointer" style={{ width: 28, height: 28, border: "2px solid #8aa53a", borderRadius: 6, color: copied ? "#39d98a" : "#8aa53a", fontSize: 14, background: "transparent" }}>{copied ? "✓" : "⧉"}</button>
-        )}
-      </div>
-      {/* Pump Fun + DexScreener — links carry the CA variable (auto-fills on launch).
-          Per the random icons-rule, this project uses the sent icons (pill + owl). */}
-      <div className="flex gap-5 mt-6">
-        <a href={PUMP_URL + CA} target="_blank" rel="noopener noreferrer" className="hud-card px-5 py-2.5 text-sm flex items-center gap-2.5 hover:brightness-125" style={{ color: "#39d98a", fontWeight: 700 }}>
-          {SHOW_BTN_ICONS && <span aria-hidden style={{ width: 22, height: 22, backgroundImage: "url(/icons/pumpfun.png)", backgroundSize: "cover", borderRadius: "50%", flexShrink: 0 }} />}
-          Pump Fun
-        </a>
-        <a href={DEX_URL + CA} target="_blank" rel="noopener noreferrer" className="hud-card px-5 py-2.5 text-sm flex items-center gap-2.5 hover:brightness-125" style={{ color: "#e9f0d8", fontWeight: 700 }}>
-          {SHOW_BTN_ICONS && <span aria-hidden style={{ width: 22, height: 22, backgroundImage: "url(/icons/dexscreener.png)", backgroundSize: "cover", borderRadius: "50%", flexShrink: 0 }} />}
-          DexScreener
-        </a>
-      </div>
+    <div className="hud-card inline-flex items-center gap-3 px-4 py-2.5" style={{ maxWidth: "94vw" }}>
+      <span className="shrink-0" style={{ color: "#8aa53a", fontWeight: 800, fontSize: 14 }}>CA:</span>
+      <span onClick={copy} title={real ? CA : undefined}
+        style={{ color: copied ? "#39d98a" : real ? "#e9f0d8" : "#7a845f", fontWeight: 600, fontSize: 14, fontFamily: real ? "ui-monospace, monospace" : "inherit", whiteSpace: "nowrap", overflowX: "auto", maxWidth: "100%", cursor: real ? "pointer" : "default" }}>
+        {copied ? "COPIED!" : CA}
+      </span>
+      {real && (
+        <button onClick={copy} aria-label="Copy CA" className="shrink-0 flex items-center justify-center cursor-pointer" style={{ width: 28, height: 28, border: "2px solid #8aa53a", borderRadius: 6, color: copied ? "#39d98a" : "#8aa53a", fontSize: 14, background: "transparent" }}>{copied ? "✓" : "⧉"}</button>
+      )}
+    </div>
+  );
+}
+
+// Pump Fun + DexScreener links (carry the CA variable, auto-fill on launch).
+// Per the random icons-rule, this project shows the sent icons (pill + owl).
+function CALinks() {
+  return (
+    <div className="flex gap-5">
+      <a href={PUMP_URL + CA} target="_blank" rel="noopener noreferrer" className="hud-card px-5 py-2.5 text-sm flex items-center gap-2.5 hover:brightness-125" style={{ color: "#39d98a", fontWeight: 700 }}>
+        {SHOW_BTN_ICONS && <span aria-hidden style={{ width: 22, height: 22, backgroundImage: "url(/icons/pumpfun.png)", backgroundSize: "cover", borderRadius: "50%", flexShrink: 0 }} />}
+        Pump Fun
+      </a>
+      <a href={DEX_URL + CA} target="_blank" rel="noopener noreferrer" className="hud-card px-5 py-2.5 text-sm flex items-center gap-2.5 hover:brightness-125" style={{ color: "#e9f0d8", fontWeight: 700 }}>
+        {SHOW_BTN_ICONS && <span aria-hidden style={{ width: 22, height: 22, backgroundImage: "url(/icons/dexscreener.png)", backgroundSize: "cover", borderRadius: "50%", flexShrink: 0 }} />}
+        DexScreener
+      </a>
     </div>
   );
 }
