@@ -21,7 +21,7 @@ export default function Home() {
   const [charId, setCharId] = useState<string>(CHARACTERS[0].id);
   const engineRef = useRef<MusicEngine | null>(null);
 
-  useEffect(() => { const e = new MusicEngine(); engineRef.current = e; return () => e.dispose(); }, []);
+  useEffect(() => { const e = new MusicEngine(); engineRef.current = e; if (process.env.NODE_ENV !== "production") (window as unknown as { __music?: MusicEngine }).__music = e; return () => e.dispose(); }, []);
 
   // hidden lifehack: the first gate click is the user gesture that unlocks + starts music
   function enter() {
