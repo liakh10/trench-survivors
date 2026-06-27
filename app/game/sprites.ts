@@ -4,39 +4,28 @@ import { ENEMIES } from "./content";
 
 type C = CanvasRenderingContext2D;
 
-export function drawAnimal(ctx: C, meme: string, x: number, y: number, r: number, hurt = false) {
-  ctx.save(); ctx.translate(x, y);
-  // shadow
-  ctx.fillStyle = "rgba(0,0,0,0.35)"; ctx.beginPath(); ctx.ellipse(0, r * 0.9, r * 0.9, r * 0.4, 0, 0, Math.PI * 2); ctx.fill();
-  const base = hurt ? "#ffffff" : faceColor(meme);
-  // head
-  ctx.fillStyle = base; circle(ctx, 0, 0, r);
-  drawFeatures(ctx, meme, r, hurt);
-  // military helmet
-  ctx.fillStyle = hurt ? "#fff" : "#3c4a2e"; ctx.beginPath(); ctx.arc(0, -r * 0.15, r * 1.04, Math.PI, 0); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = hurt ? "#fff" : "#4f6138"; ctx.fillRect(-r * 1.08, -r * 0.2, r * 2.16, r * 0.16);
-  ctx.restore();
+// image cache for trencher avatars (loaded once, drawn each frame)
+const imgCache = new Map<string, HTMLImageElement>();
+function getImg(src: string): HTMLImageElement {
+  let im = imgCache.get(src);
+  if (!im) { im = new Image(); im.src = src; imgCache.set(src, im); }
+  return im;
 }
 
-function faceColor(meme: string): string {
-  switch (meme) { case "cat": return "#f1c27d"; case "shiba": return "#e2ad5e"; case "pom": return "#e8bd7a"; case "toad": return "#6cb157"; case "hamster": return "#e7c08a"; default: return "#ddd"; }
-}
-function drawFeatures(ctx: C, meme: string, r: number, hurt: boolean) {
-  const dk = hurt ? "#999" : "#241a10";
-  if (meme === "toad") {
-    ctx.fillStyle = hurt ? "#eee" : "#7cc265"; circle(ctx, -r * 0.4, -r * 0.5, r * 0.34); circle(ctx, r * 0.4, -r * 0.5, r * 0.34);
-    ctx.fillStyle = dk; circle(ctx, -r * 0.4, -r * 0.45, r * 0.12); circle(ctx, r * 0.4, -r * 0.45, r * 0.12);
-    ctx.strokeStyle = dk; ctx.lineWidth = r * 0.12; ctx.beginPath(); ctx.arc(0, r * 0.1, r * 0.5, 0.2, Math.PI - 0.2); ctx.stroke();
-    return;
-  }
-  // ears for cat/shiba/pom/hamster
-  ctx.fillStyle = faceColor(meme); ctx.beginPath(); ctx.moveTo(-r * 0.7, -r * 0.5); ctx.lineTo(-r * 0.95, -r * 1.0); ctx.lineTo(-r * 0.3, -r * 0.75); ctx.closePath(); ctx.fill();
-  ctx.beginPath(); ctx.moveTo(r * 0.7, -r * 0.5); ctx.lineTo(r * 0.95, -r * 1.0); ctx.lineTo(r * 0.3, -r * 0.75); ctx.closePath(); ctx.fill();
-  // eyes
-  ctx.fillStyle = dk; circle(ctx, -r * 0.32, -r * 0.05, r * 0.13); circle(ctx, r * 0.32, -r * 0.05, r * 0.13);
-  // nose / mouth
-  ctx.fillStyle = hurt ? "#aaa" : "#3a2a1a"; circle(ctx, 0, r * 0.28, r * 0.12);
-  if (meme === "cat") { ctx.strokeStyle = dk; ctx.lineWidth = r * 0.06; line(ctx, -r * 0.9, r * 0.2, -r * 0.4, r * 0.28); line(ctx, r * 0.9, r * 0.2, r * 0.4, r * 0.28); }
+export function drawTrencher(ctx: C, src: string, x: number, y: number, r: number, ring: string, hurt = false) {
+  ctx.save(); ctx.translate(x, y);
+  // shadow
+  ctx.fillStyle = "rgba(0,0,0,0.4)"; ctx.beginPath(); ctx.ellipse(0, r * 0.92, r * 0.85, r * 0.38, 0, 0, Math.PI * 2); ctx.fill();
+  // circular avatar
+  ctx.save(); ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.clip();
+  const im = getImg(src);
+  if (im.complete && im.naturalWidth) ctx.drawImage(im, -r, -r, r * 2, r * 2);
+  else { ctx.fillStyle = "#2a3320"; ctx.fillRect(-r, -r, r * 2, r * 2); }
+  if (hurt) { ctx.fillStyle = "rgba(255,255,255,0.85)"; ctx.fillRect(-r, -r, r * 2, r * 2); }
+  ctx.restore();
+  // unified ring
+  ctx.lineWidth = 3; ctx.strokeStyle = ring; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.stroke();
+  ctx.restore();
 }
 
 export function drawEnemy(ctx: C, e: Enemy, x: number, y: number) {

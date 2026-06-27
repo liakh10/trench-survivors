@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Game, type Upgrade } from "./engine";
 import { WEAPONS, fmtMC, fmtTime, CHARACTERS } from "./content";
-import { drawAnimal, drawEnemy, WEAPON_ICON, PASSIVE_ICON } from "./sprites";
+import { drawTrencher, drawEnemy, WEAPON_ICON, PASSIVE_ICON } from "./sprites";
 import { getSfx } from "../sfx";
 import { getBest, saveBest } from "../store";
 
@@ -257,8 +257,7 @@ function draw(ctx: CanvasRenderingContext2D, g: Game, W: number, H: number, dpr:
   for (const p of g.projectiles) { ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = "rgba(255,255,255,0.7)"; ctx.beginPath(); ctx.arc(p.x, p.y, p.radius * 0.4, 0, Math.PI * 2); ctx.fill(); }
 
   // player
-  const meme = CHARACTERS.find((c) => c.id === g.char.id)?.meme ?? "cat";
-  drawAnimal(ctx, meme, g.px, g.py, 17, g.invuln > 0 && Math.floor(g.time * 20) % 2 === 0);
+  drawTrencher(ctx, g.char.img, g.px, g.py, 18, g.char.color, g.invuln > 0 && Math.floor(g.time * 20) % 2 === 0);
 
   // particles
   for (const p of g.particles) { ctx.globalAlpha = Math.max(0, p.life / p.maxLife); ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill(); }

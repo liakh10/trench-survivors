@@ -117,18 +117,19 @@ export const ENEMIES: Record<EnemyId, EnemyDef> = {
 };
 
 export interface CharDef {
-  id: string; name: string; meme: string; desc: string; color: string;
+  id: string; name: string; img: string; desc: string; color: string;
   hp: number; speed: number; pickup: number;
   startWeapon: WeaponId;
   bonus: Partial<Record<PassiveId, number>>; // flat passive levels granted at start (as multipliers added directly)
 }
 
+// Roster = real trenchers (their PFPs, unified circular avatars in /public/trenchers).
 export const CHARACTERS: CharDef[] = [
-  { id: "cat",    name: "Grinning Cat", meme: "cat",    desc: "Balanced all-rounder.",        color: "#f1c27d", hp: 110, speed: 156, pickup: 130, startWeapon: "diamond", bonus: {} },
-  { id: "shiba",  name: "Shiba Runner", meme: "shiba",  desc: "Fast & aggressive.",           color: "#e2ad5e", hp: 95,  speed: 182, pickup: 130, startWeapon: "bonk",    bonus: { boots: 0.12 } },
-  { id: "pom",    name: "Pom Sniper",   meme: "pom",    desc: "Orbiting defense, big range.",  color: "#d99a5a", hp: 105, speed: 152, pickup: 200, startWeapon: "orbit",  bonus: { magnet: 60 } },
-  { id: "toad",   name: "Kaizen Toad",  meme: "toad",   desc: "Tanky, burns the swarm.",       color: "#6cb157", hp: 155, speed: 142, pickup: 130, startWeapon: "aura",    bonus: { vest: 20 } },
-  { id: "hamster",name: "Hamster",      meme: "hamster",desc: "Glass cannon, fast XP.",        color: "#e7c08a", hp: 85,  speed: 164, pickup: 160, startWeapon: "laser",  bonus: { greed: 0.15 } },
+  { id: "cupsey", name: "Cupsey",       img: "/trenchers/cupsey.png", desc: "Balanced all-rounder.",          color: "#f5c542", hp: 110, speed: 156, pickup: 130, startWeapon: "diamond", bonus: {} },
+  { id: "t9ndra", name: "t9ndra",       img: "/trenchers/t9ndra.png", desc: "Fast & aggressive.",             color: "#e2ad5e", hp: 95,  speed: 184, pickup: 130, startWeapon: "bonk",    bonus: { boots: 0.12 } },
+  { id: "donutt", name: "Donuttcrypto", img: "/trenchers/donutt.png", desc: "Tanky, burns the swarm.",        color: "#e6356f", hp: 155, speed: 142, pickup: 130, startWeapon: "aura",    bonus: { vest: 20 } },
+  { id: "cented", name: "cented",       img: "/trenchers/cented.png", desc: "Sniper. Deletes the toughest.",  color: "#7fe9ff", hp: 105, speed: 150, pickup: 160, startWeapon: "sniper",  bonus: { magnet: 50 } },
+  { id: "decu",   name: "decu",         img: "/trenchers/decu.png",   desc: "Glass-cannon assassin.",         color: "#a06bff", hp: 85,  speed: 168, pickup: 160, startWeapon: "laser",   bonus: { greed: 0.15 } },
 ];
 
 export function fmtMC(n: number): string {

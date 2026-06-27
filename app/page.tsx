@@ -55,51 +55,68 @@ export default function Home() {
       {phase === "intro" && (
         <div className={`fixed inset-0 z-30 flex flex-col items-center justify-center text-center px-6 ${introLeaving ? "intro-leaving" : ""}`}>
           <div className="pop-in flex flex-col items-center">
-            <div className="bob flicker mb-3"><HeroArt size={150} /></div>
-            <div className="text-xs tracking-[0.5em] text-white/45 mb-2">WELCOME TO THE TRENCHES</div>
-            <h1 className="text-5xl md:text-7xl olive-text leading-none" style={{ fontFamily: "var(--font-display)" }}>TRENCH</h1>
-            <h1 className="text-5xl md:text-7xl gold-text leading-none mt-1" style={{ fontFamily: "var(--font-display)" }}>SURVIVORS</h1>
-            <div className="text-sm text-white/55 mt-4 max-w-md">Auto-blast endless waves of jeeters &amp; rug devs. Level up, stack absurd synergies, farm the bag. How long can you survive?</div>
-            <div className="mt-10 flex flex-col sm:flex-row gap-5 items-center">
-              <button onClick={enter} className="menu-btn" style={{ minWidth: 230 }}>PLAY AS GUEST</button>
-              <button onClick={walletEnter} className="menu-btn-purple" style={{ minWidth: 230 }}>{connected ? "ENTER WALLET" : "CONNECT WALLET"}</button>
+            <div className="bob flicker mb-5"><HeroArt size={188} /></div>
+            <h1 className="text-6xl md:text-8xl olive-text leading-none" style={{ fontFamily: "var(--font-display)" }}>TRENCH</h1>
+            <h1 className="text-6xl md:text-8xl gold-text leading-none mt-1" style={{ fontFamily: "var(--font-display)" }}>SURVIVORS</h1>
+            <div className="text-base text-white/60 mt-6 max-w-lg">Auto-blast endless waves of jeeters &amp; rug devs. Level up, stack absurd synergies, farm the bag. How long can you survive?</div>
+            <div className="mt-16 flex flex-col sm:flex-row gap-7 md:gap-10 items-center">
+              <button onClick={enter} className="menu-btn" style={{ minWidth: 300 }}>PLAY AS GUEST</button>
+              <button onClick={walletEnter} className="menu-btn-purple" style={{ minWidth: 300 }}>{connected ? "ENTER WALLET" : "CONNECT WALLET"}</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* SELECT (main menu) */}
-      {phase === "select" && (
-        <div className="relative z-10 min-h-screen flex flex-col items-center px-4 pb-12 cine-in">
-          <div className="text-center mt-8 select-none">
-            <div className="text-4xl md:text-6xl olive-text leading-none" style={{ fontFamily: "var(--font-display)" }}>TRENCH SURVIVORS</div>
-            <div className="text-sm tracking-[0.35em] text-white/45 mt-2">CHOOSE YOUR TRENCHER</div>
-          </div>
+      {/* SELECT — operator-style main menu */}
+      {phase === "select" && (() => {
+        const sel = CHARACTERS.find((c) => c.id === charId) ?? CHARACTERS[0];
+        return (
+          <div className="relative z-10 min-h-screen flex flex-col items-center px-6 py-12 cine-in">
+            <div className="text-center select-none">
+              <div className="text-5xl md:text-7xl olive-text leading-none" style={{ fontFamily: "var(--font-display)" }}>SELECT OPERATOR</div>
+              <div className="text-sm md:text-base tracking-[0.45em] text-white/40 mt-4">CHOOSE YOUR TRENCHER</div>
+            </div>
 
-          <div className="w-full max-w-4xl grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mt-8">
-            {CHARACTERS.map((c) => (
-              <button key={c.id} onClick={() => setCharId(c.id)} className={`char-tile flex flex-col items-center text-center ${charId === c.id ? "on" : ""}`}>
-                <CharBadge meme={c.meme} color={c.color} size={68} />
-                <div className="mt-2" style={{ fontFamily: "var(--font-display)", fontSize: 14, color: charId === c.id ? "#f5c542" : "#dfe7c8" }}>{c.name}</div>
-                <div className="text-[11px] text-white/45 mt-1 leading-tight">{c.desc}</div>
-                <div className="text-[10px] text-[#8aa53a] mt-1">START: {weaponName(c.startWeapon)}</div>
-              </button>
-            ))}
-          </div>
+            {/* featured operator */}
+            <div className="flex flex-col md:flex-row items-center gap-10 md:gap-16 mt-12 md:mt-16 w-full max-w-4xl">
+              <div className="bob shrink-0" style={{ width: 210, height: 210, borderRadius: "50%", backgroundImage: `url(${sel.img})`, backgroundSize: "cover", backgroundPosition: "center", border: `4px solid ${sel.color}`, boxShadow: `0 0 60px ${sel.color}66` }} />
+              <div className="text-center md:text-left flex-1">
+                <div className="text-5xl md:text-7xl gold-text leading-none" style={{ fontFamily: "var(--font-display)" }}>{sel.name}</div>
+                <div className="text-white/60 text-lg mt-3">{sel.desc}</div>
+                <div className="text-sm text-[#8aa53a] mt-2 tracking-wider" style={{ fontFamily: "var(--font-display)" }}>START WEAPON · {weaponName(sel.startWeapon)}</div>
+                <div className="flex flex-col gap-2.5 mt-6 max-w-sm mx-auto md:mx-0">
+                  <StatBar label="HP" v={sel.hp} max={160} color="#39d98a" />
+                  <StatBar label="SPEED" v={sel.speed} max={190} color="#7fe9ff" />
+                  <StatBar label="PICKUP" v={sel.pickup} max={200} color="#a06bff" />
+                </div>
+              </div>
+            </div>
 
-          <button onClick={() => startGame(charId)} className="menu-btn mt-9" style={{ minWidth: 260, fontSize: 22 }}>DEPLOY ⚔</button>
+            {/* roster — large avatars, generous spacing */}
+            <div className="flex flex-wrap justify-center gap-6 md:gap-9 mt-14">
+              {CHARACTERS.map((c) => (
+                <button key={c.id} onClick={() => { getSfx().click(); setCharId(c.id); }} className={`roster-pick ${charId === c.id ? "on" : ""}`} title={c.name} aria-label={c.name}>
+                  <span style={{ display: "block", width: 100, height: 100, borderRadius: "50%", backgroundImage: `url(${c.img})`, backgroundSize: "cover", backgroundPosition: "center" }} />
+                </button>
+              ))}
+            </div>
 
-          {/* bottom: ticker + CA + X */}
-          <div className="flex flex-col items-center gap-5 mt-12">
-            <div className="hud-card px-8 py-2 text-2xl gold-text" style={{ fontFamily: "var(--font-display)" }}>{TICKER}</div>
-            <CADisplay />
-            <a href={X_URL} target="_blank" rel="noopener noreferrer" aria-label="Follow on X" className="hud-btn" style={{ width: 48, height: 48 }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
-            </a>
-            <MusicToggle engine={engineRef} />
+            <button onClick={() => startGame(charId)} className="menu-btn mt-16" style={{ minWidth: 340, fontSize: 26 }}>DEPLOY ⚔</button>
+
+            {/* footer */}
+            <div className="flex flex-col items-center gap-6 mt-auto pt-16">
+              <div className="hud-card px-10 py-2.5 text-3xl gold-text" style={{ fontFamily: "var(--font-display)" }}>{TICKER}</div>
+              <CADisplay />
+              <div className="flex items-center gap-6">
+                <a href={X_URL} target="_blank" rel="noopener noreferrer" aria-label="Follow on X" className="hud-btn" style={{ width: 52, height: 52 }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+                </a>
+                <MusicToggle engine={engineRef} />
+              </div>
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </main>
   );
 }
@@ -168,31 +185,15 @@ function HeroArt({ size = 150 }: { size?: number }) {
   );
 }
 
-function CharBadge({ meme, color, size = 68 }: { meme: string; color: string; size?: number }) {
+function StatBar({ label, v, max, color }: { label: string; v: number; max: number; color: string }) {
+  const pct = Math.max(8, Math.min(100, (v / max) * 100));
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r="48" fill="#0e1109" />
-      <g>
-        {meme === "toad" ? (
-          <>
-            <circle cx="50" cy="54" r="34" fill={color} />
-            <circle cx="38" cy="40" r="11" fill="#7cc265" /><circle cx="62" cy="40" r="11" fill="#7cc265" />
-            <circle cx="38" cy="41" r="4" fill="#241a10" /><circle cx="62" cy="41" r="4" fill="#241a10" />
-          </>
-        ) : (
-          <>
-            <circle cx="50" cy="54" r="32" fill={color} />
-            <path d="M28 38 L22 18 L40 32 Z" fill={color} /><path d="M72 38 L78 18 L60 32 Z" fill={color} />
-            <circle cx="40" cy="50" r="4" fill="#241a10" /><circle cx="60" cy="50" r="4" fill="#241a10" />
-            <circle cx="50" cy="62" r="3.6" fill="#3a2a1a" />
-          </>
-        )}
-        {/* helmet */}
-        <path d="M14 44 A36 36 0 0 1 86 44 Z" fill="#3c4a2e" />
-        <rect x="12" y="40" width="76" height="7" rx="2" fill="#4f6138" />
-      </g>
-      <circle cx="50" cy="50" r="47" fill="none" stroke="#3a472a" strokeWidth="3" />
-    </svg>
+    <div className="flex items-center gap-3">
+      <span className="text-[11px] tracking-wider text-white/45 w-16 text-right" style={{ fontFamily: "var(--font-display)" }}>{label}</span>
+      <div className="flex-1 h-2.5 rounded-full overflow-hidden" style={{ background: "rgba(20,26,14,0.85)", border: "1px solid #2a3320" }}>
+        <div style={{ width: pct + "%", height: "100%", background: color, transition: "width 0.2s" }} />
+      </div>
+    </div>
   );
 }
 
