@@ -1,6 +1,6 @@
 // Token / Contract Address config. On launch, replace CA with the real address,
 // commit & push — the site picks it up automatically (GitHub → Vercel auto-deploy).
-export const CA: string = "SOON"; // Replace with real CA on launch
+export const CA: string = "86NsXmR6pTnXmR6L6SnAU1BNBf9fdRq8xwBSMXYmpump"; // Replace with real CA on launch
 export const TICKER = "$DIGIN";
 export const TOKEN_NAME = "Trench Survivors";
 export const X_URL = "https://x.com/trencsurvivors"; // Replace with your X handle
