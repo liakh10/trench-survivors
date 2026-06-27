@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { SolanaProviders } from "./providers";
 import { TICKER, TOKEN_NAME } from "./config";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: TICKER,
@@ -13,6 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <SolanaProviders>{children}</SolanaProviders>
+        <Analytics />
       </body>
     </html>
   );
